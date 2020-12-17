@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="jQuery.min.js"></script>
+    <title>2048</title>
+</head>
+<style>
+    * {
+        background-color: #4c889b;
+        padding: 0;
+        margin: 0;
+    }
+    
+    h1 {
+        position: relative;
+        font-size: 50px;
+        top: 30px;
+        text-align: center;
+        color: rgba(255, 0, 128, 0.829);
+        font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+    }
+    
+    div.new {
+        position: relative;
+        top: 60px;
+        text-align: center;
+    }
+    
+    div.score {
+        position: relative;
+        top: 80px;
+        text-align: center;
+    }
+    
+    span.scorestyle {
+        display: inline-block;
+        padding: 50px;
+        height: 50px;
+        background-color: coral;
+        color: rgba(199, 252, 164, 0.829);
+        padding: 10px;
+        font-size: 30px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 50px;
+        text-shadow: #FF0000 0 0 10px;
+    }
+    
+    span.backstyle {
+        display: inline-block;
+        width: 100px;
+        height: 50px;
+        background-color: coral;
+        color: rgba(199, 252, 164, 0.829);
+        padding: 10px;
+        font-size: 30px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 50px;
+        text-shadow: #FF0000 0 0 10px;
+    }
+    
+    span.new_game:hover {
+        cursor: pointer;
+    }
+    
+    span.new_game {
+        display: inline-block;
+        width: 100px;
+        height: 50px;
+        background-color: coral;
+        padding: 10px;
+        font-size: 30px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 50px;
+        text-shadow: #FF0000 0 0 10px;
+        color: rgba(199, 252, 164, 0.829);
+    }
+    
+    div.box {
+        background-color: #ffb396;
+        position: relative;
+        top: 100px;
+        width: 300px;
+        height: 300px;
+        border-radius: 20px;
+        left: 50%;
+        transform: translateX(-150px);
+    }
+    
+    div.box span {
+        /* margin: 11px; */
+        position: absolute;
+        width: 65px;
+        height: 65px;
+        background-color: #ff8585;
+        border-radius: 20px;
+        font-size: 30px;
+        font-weight: bolder;
+        text-align: center;
+        line-height: 65px;
+    }
+    
+    @keyframes sc {
+        from {
+            width: 50px;
+            height: 50px;
+        }
+        to {
+            width: 65px;
+            height: 65px;
+        }
+    }
+    
+    img {
+        left: -90px;
+        height: 300px;
+        position: absolute;
+        z-index: 2;
+    }
+    
+    span.backstyle {
+        cursor: pointer;
+    }
+    
+    table.rank {
+        position: absolute;
+        top: -100px;
+        right: 100px;
+        width: 200px;
+        height: 300px;
+        font-weight: bolder;
+        font-size: larger;
+    }
+    
+    table {
+        border-collapse: collapse;
+        border: #ffb396 1px solid;
+    }
+    
+    th,
+    td {
+        border: 1px solid #999;
+        text-align: center;
+        padding: 20px 0;
+        background-color: orange;
+        height: 40px;
+    }
+    
+    table thead tr {
+        background-color: #008c8c;
+        color: #fff;
+    }
+    
+    table tbody tr:nth-child(odd) {
+        background-color: #eee;
+    }
+    
+    table tbody tr:hover {
+        background-color: #ccc;
+    }
+    
+    table tbody tr td:first-child {
+        color: #f40;
+    }
+</style>
+
+<body>
+    <h1>2048</h1>
+    <div class="new">
+        <span class="new_game">新游戏</span>
+        <span class="backstyle" id="backstyle">回撤</span>
+    </div>
+    <div class="score" id="score">
+        <span class="scorestyle" id="scorestyle">得分: 0</span>
+        <table class="rank">
+            <thead>
+                <tr>
+                    <th>排行榜</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="td"></td>
+                </tr>
+                <tr>
+                    <td class="td"></td>
+                </tr>
+                <tr>
+                    <td class="td"></td>
+                </tr>
+                <tr>
+                    <td class="td"></td>
+                </tr>
+                <tr>
+                    <td class="td"></td>
+                </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+    <div class="box">
+        <span class="b" id="0_0"></span>
+        <span class="b" id="0_1"></span>
+        <span class="b" id="0_2"></span>
+        <span class="b" id="0_3"></span>
+        <span class="b" id="1_0"></span>
+        <span class="b" id="1_1"></span>
+        <span class="b" id="1_2"></span>
+        <span class="b" id="1_3"></span>
+        <span class="b" id="2_0"></span>
+        <span class="b" id="2_1"></span>
+        <span class="b" id="2_2"></span>
+        <span class="b" id="2_3"></span>
+        <span class="b" id="3_0"></span>
+        <span class="b" id="3_1"></span>
+        <span class="b" id="3_2"></span>
+        <span class="b" id="3_3"></span>
+        <img src="gameover.png" style="display: none;" class="gameover" id="gameover"></img>
+
+    </div>
+    <div>
+
+    </div>
+    <script>
+        var new_game = document.getElementsByClassName("new_game")[0];
+        var back = document.getElementById("backstyle");
+        var spans = document.getElementsByClassName("b");
+        var copy = [
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ];
+        var score = 0;
+        var score1 = 0;
+        var s = new Stack();
+        var a = new Stack();
+
+        function getScore(score) {
+            var s = "得分：" + score;
+            document.getElementById("scorestyle").innerHTML = s;
+        }
+        styles = document.styleSheets[0];
+        init(); //初始化
+
+        function Rnumber() {
+            return Math.round(Math.random() + 1) * 2;
+        } //随机生成2或4
+
+        function RLocation() {
+            return Math.floor(Math.random() * 4);
+        } //随机生成插入位置
+
+
+
+        new_game.addEventListener("click", function(e) {
+            a.clear();
+            s.clear();
+            for (let i = 0; i < 4; i++)
+                for (let j = 0; j < 4; j++) {
+                    spans[i * 4 + j].innerText = "";
+                    spans[i * 4 + j].id = i + "_" + j;
+                    spans[i * 4 + j].style.backgroundColor = "#ff8585";
+                }
+            score = 0;
+            getScore(score);
+            localStorage.removeItem("store");
+            init();
+        });
+
+        function get_color(n) {
+            switch (n) {
+                case 0:
+                    return "#ff8585";
+                case 2:
+                    return "#FF66FF";
+                case 4:
+                    return "#FF00FF";
+                case 8:
+                    return "#FF33CC";
+                case 16:
+                    return "#FF3399";
+                case 32:
+                    return "#FF6666";
+                case 64:
+                    return "#FF6633";
+                case 128:
+                    return "#FF3366";
+                case 256:
+                    return "#CC6633";
+                case 512:
+                    return "#FF0033";
+                case 1024:
+                    return "#CC3333";
+                case 2048:
+                    return "#993333";
+                default:
+                    return "#660000";
+            }
+        }
+
+        function ArrayCopy(arr) {
+            var copyArr = new Array;
+            for (i = 0; i < arr.length; i++) {
+                if (typeof arr[i] == "object") {
+                    copyArr[i] = new Array();
+                    for (j = 0; j < arr[i].length; j++) {
+                        copyArr[i][j] = arr[i][j];
+                    }
+                } else {
+                    copyArr[i] = arr[i];
+                }
+            }
+            return copyArr;
+        }
+
+        function back_function(e) {
+
+            localStorage.removeItem("store");
+            localStorage.removeItem("score");
+            if (a.length() != 0)
+                span_array = ArrayCopy(a.pop());
+            console.log(span_array);
+            reback();
+            if (s.length() != 0)
+                score = s.pop();
+            getScore(score);
+            localStorage.setItem("store", span_array.toString());
+            localStorage.setItem("score", score.toString());
+        }
+
+        back.addEventListener("click", back_function);
+
+        function reback() {
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    var s = i.toString() + '_' + j.toString();
+                    let sp = document.getElementById(s);
+                    sp.style.backgroundColor = get_color(span_array[i][j]);
+                    sp.innerText = '';
+                    if (span_array[i][j]) {
+                        document.getElementById(s).innerText = span_array[i][j];
+
+                    }
+                }
+            }
+        }
+
+        function jugle_full() {
+            for (let i = 0; i < 4; i++)
+                for (let j = 0; j < 4; j++)
+                    if (!span_array[i][j])
+                        return false;
+            return true;
+
+        }
+
+        function gameover() {
+            if (LeftNonMove() && RightNonMove() && UpNonMove() && DownNonMove()) {
+                document.getElementById("gameover").style.display = "block";
+                console.log(localStorage.length);
+                localStorage.setItem(localStorage.length, score);
+                document.removeEventListener("keydown", keyd);
+                back.removeEventListener("click", back_function);
+                a.clear();
+                s.clear();
+            }
+        }
+
+        function Stack() {
+            this.dataStore = [];
+            this.top = 0;
+            this.push = push;
+            this.pop = pop;
+            this.clear = clear;
+            this.length = length;
+
+            function push(element) {
+                this.dataStore[this.top++] = element;
+            }
+
+            function pop() {
+                return this.dataStore[--this.top];
+            }
+
+            function clear() {
+                this.top = 0;
+            }
+
+            function length() {
+                return this.top;
+            }
+        }
+
+
+        function UpNonMove() {
+            for (var j = 0; j < 4; j++) {
+                for (var i = 1; i < 4; i++) {
+                    if ((span_array[i - 1][j] == 0 && span_array[i][j] != 0) || (span_array[i - 1][j] == span_array[i][j] && span_array[i][j] != 0)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function DownNonMove() {
+            for (var j = 0; j < 4; j++) {
+                for (var i = 2; i >= 0; i--) {
+                    if ((span_array[i + 1][j] == 0 && span_array[i][j] != 0) || (span_array[i + 1][j] == span_array[i][j] && span_array[i][j] != 0)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function LeftNonMove() {
+            for (var i = 0; i < 4; i++) {
+                for (var j = 3; j > 0; j--) {
+                    if ((span_array[i][j - 1] == 0 && span_array[i][j] != 0) || (span_array[i][j - 1] == span_array[i][j] && span_array[i][j] != 0)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function RightNonMove() {
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 3; j++) {
+                    if ((span_array[i][j + 1] == 0 && span_array[i][j] != 0) || (span_array[i][j + 1] == span_array[i][j] && span_array[i][j] != 0)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function random_create(n) {
+            new_span = [];
+            for (let i = 0; i < n; i++) {
+                let x = RLocation();
+                let y = RLocation();
+                let bo = jugle_full();
+                if (bo) {
+                    let gameover = document.getElementsByClassName("gameover")[0];
+                    gameover.style = "display:block;";
+                }
+                if (span_array[x][y] && !bo) {
+                    i--;
+                    continue;
+                }
+
+
+                let id = x + "_" + y;
+                let locat = x * 4 + y;
+                var s = document.getElementById(id);
+
+                s.style = "animation-name:sc;animation-duration:0.1s";
+                s.style.left = y * 70 + 11 + "px";
+                s.style.top = x * 70 + 11 + "px";
+                var num = Rnumber();
+                let color = get_color(num);
+                new_span[new_span.length] = {
+                    top: x,
+                    left: y,
+                    color: color
+                }
+                localStorage.removeItem("store")
+                span_array[x][y] = num;
+                localStorage.setItem("store", span_array.toString());
+                if (n == 1) {
+                    s.innerText = num.toString();
+                    s.style.backgroundColor = color;
+                } else {
+                    spans[locat].innerText = num.toString();
+                    spans[locat].style.backgroundColor = color;
+                }
+                for (let i = 0; i < new_span.length; i++) {
+                    setTimeout(function del() {
+                        let lt = new_span[i].left * 70 + 11;
+                        let tp = new_span[i].top * 70 + 11;
+                        let color = new_span[i].color;
+                        let s = document.getElementById(x + "_" + y);
+                        s.style = "left:" + lt + "px;top: " + tp + "px; background-color: " + color + ";";
+
+                    }, 100)
+                }
+            }
+        }
+
+        function init() {
+            document.addEventListener("keydown", keyd);
+            back.addEventListener("click", back_function);
+            score_history = [];
+            span_array = [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ];
+            let td = document.getElementsByClassName("td");
+            for (let i = 0; i < localStorage.length; i++)
+                score_history.push(localStorage.getItem("" + i));
+            score_history.sort(function(num1, num2) {
+                return num2 - num1;
+            })
+            console.log(score_history);
+            for (let i = 0; i < score_history.length && i < 5; i++)
+                td[i].innerText = score_history[i];
+            var valueLocal = localStorage.getItem("store");
+            var scoreLocal = localStorage.getItem("score");
+            console.log(valueLocal);
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].style.left = (i % 4) * 70 + 11 + "px";
+                spans[i].style.top = (Math.floor(i / 4)) * 70 + 11 + "px";
+            }
+            let gameover = document.getElementsByClassName("gameover")[0];
+            gameover.style = "display:none;"
+            if (valueLocal == null) {
+                span_array = [
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]
+                ];
+                random_create(2);
+            } else {
+                var str = valueLocal.split(",");
+                var k = 0;
+                for (var i = 0; i < 4; i++) {
+                    for (var j = 0; j < 4; j++) {
+                        span_array[i][j] = Number(str[k]);
+                        k++;
+                    }
+                }
+                console.log(str);
+                console.log(span_array);
+                reback();
+                getScore(Number(scoreLocal));
+                score = Number(scoreLocal);
+                score1 = Number(scoreLocal);
+
+            }
+            copy = ArrayCopy(span_array);
+            console.log(score1);
+            localStorage.setItem("store", span_array.toString());
+        }
+
+        var key = false;
+        document.addEventListener("keydown", keyd);
+
+        function keyd(event) { //加入键盘事件
+            let keycode = event.keyCode;
+            if (!key) {
+                key = true;
+                setTimeout(function() {
+                    let keycode = event.keyCode;
+                    localStorage.removeItem("store");
+                    localStorage.removeItem("score");
+
+                    switch (keycode) {
+                        case 40:
+                            if (!DownNonMove()) {
+                                copy = ArrayCopy(span_array);
+                                a.push(copy);
+                                s.push(score);
+                            }
+                            getScore(score);
+                            down();
+                            getScore(score);
+                            gameover();
+                            break;
+                        case 38:
+                            if (!UpNonMove()) {
+                                copy = ArrayCopy(span_array);
+                                a.push(copy);
+                                s.push(score);
+                            }
+                            getScore(score);
+                            up();
+                            getScore(score);
+                            gameover();
+                            break;
+                        case 37:
+                            if (!LeftNonMove()) {
+                                copy = ArrayCopy(span_array);
+                                a.push(copy);
+                                s.push(score);
+                            }
+                            getScore(score);
+                            left();
+                            getScore(score);
+                            gameover();
+                            break;
+                        case 39:
+                            if (!RightNonMove()) {
+                                copy = ArrayCopy(span_array);
+                                a.push(copy);
+                                s.push(score);
+                            }
+                            getScore(score);
+                            right();
+                            getScore(score);
+                            gameover();
+                            break;
+                    }
+                    localStorage.setItem("store", span_array.toString());
+                    localStorage.setItem("score", score.toString());
+                    if (LeftNonMove() && RightNonMove() && UpNonMove() && DownNonMove()) {
+                        localStorage.removeItem("store");
+                        localStorage.removeItem("score");
+                    }
+                    key = false;
+                }, 200)
+            } else {
+                return null;
+            }
+
+        }
+
+
+        function showMoveAnimation1(loc) {
+            console.log(loc);
+            for (let i = 0; i < loc.length; i++) {
+                var numberCell = $("#" + loc[i].d);
+                numberCell.css("z-index", "1");
+                var m = loc[i].left;
+                numberCell.animate({
+                    left: m
+                }, 100);
+                let startspan = document.getElementById(loc[i].startI + "_" + loc[i].startJ);
+                startspan.innerText = "";
+                startspan.style.backgroundColor = "#ff8585";
+            }
+        }
+
+        function showMoveAnimation2(loc) {
+            console.log(loc);
+            for (let i = 0; i < loc.length; i++) {
+                var numberCell = $("#" + loc[i].d);
+                numberCell.css("z-index", "1");
+                var m = loc[i].top;
+                numberCell.animate({
+                    top: m
+                }, 100);
+                let startspan = document.getElementById(loc[i].startI + "_" + loc[i].startJ);
+                startspan.innerText = "";
+                startspan.style.backgroundColor = "#ff8585";
+            }
+        }
+
+
+        function showMoveAnimation_right(loc) {
+            console.log(loc);
+            for (let i = 0; i < loc.length; i++) {
+                var numberCell = $("#" + loc[i].d);
+                numberCell.css("z-index", "1");
+                var m = loc[i].right;
+                numberCell.animate({
+                    left: m
+                }, 100);
+                let startspan = document.getElementById(loc[i].startI + "_" + loc[i].startJ);
+                startspan.innerText = "";
+                startspan.style.backgroundColor = "#ff8585";
+            }
+        }
+
+        function jugle(start, end, i) {
+            for (let m = start + 1; m < end; m++) {
+                if (span_array[i][m]) {
+                    return false
+                }
+            }
+            return true;
+        }
+
+        function jugle2(start, end, i) {
+            for (let m = start + 1; m < end; m++) {
+                if (span_array[m][i]) {
+                    return false
+                }
+            }
+            return true;
+        }
+
+        function jugle_down(start, end, i) {
+            for (let m = end - 1; m > start; m--) {
+                if (span_array[m][i]) {
+                    return false
+                }
+            }
+            return true;
+        }
+
+        function jugle_right(start, end, i) {
+            for (let m = end - 1; m > start; m--) {
+                if (span_array[i][m]) {
+                    return false
+                }
+            }
+            return true;
+        }
+
+        function create(loc) {
+            var Parent = spans[0].parentNode;
+            for (let i = 0; i < loc.length; i++) {
+                let x = loc[i].startI,
+                    y = loc[i].startJ,
+                    s = document.getElementById(x + "_" + y),
+                    node = s.cloneNode(true);
+                Parent.appendChild(node);
+                loc[i].d = s.id + "m";
+                s.id += "m";
+            }
+
+        }
+
+
+
+        function deleteElements(loc) {
+            var Parent = spans[0].parentNode;
+            setTimeout(function() {
+                for (let i = 0; i < loc.length; i++) {
+                    let endspan = document.getElementById(loc[i].endI + "_" + loc[i].endJ);
+                    endspan.innerText = loc[i].value + Number(endspan.innerText);
+                    endspan.style.backgroundColor = get_color(Number(endspan.innerText));
+                    let d1 = document.getElementById(loc[i].d);
+                    Parent.removeChild(d1);
+                }
+            }, 100);
+        }
+
+        function left() {
+            var loc = new Array();
+            let move_flag = false;
+            for (let i = 0; i < 4; i++) {
+                let flag = false;
+                for (let j = 0; j < 4; j++) {
+                    if (!span_array[i][j] || j == 0) continue;
+                    for (let k = 0; k < j; k++) {
+                        if (flag && span_array[i][k] == span_array[i][j] && jugle(k, j, i)) {
+                            flag = false;
+                            continue;
+                        }
+
+                        if (!span_array[i][k] && jugle(k, j, i) || span_array[i][k] == span_array[i][j] && jugle(k, j, i)) {
+                            let sp = document.getElementById(i + "_" + k);
+                            loc[loc.length] = {
+                                startI: i,
+                                startJ: j,
+                                endI: i,
+                                endJ: k,
+                                left: sp.offsetLeft,
+                                value: span_array[i][j]
+                            }
+                            if (span_array[i][k] == span_array[i][j] && jugle(k, j, i)) {
+                                flag = true;
+                                score += span_array[i][k] * 2;
+                            }
+                            span_array[i][k] += span_array[i][j];
+                            span_array[i][j] = 0;
+                            move_flag = true;
+                            break;
+
+                        } else if (!span_array[i][k] && !jugle(k, j, i)) {
+
+                            let sp = document.getElementById(i + "_" + k);
+                            loc[loc.length] = {
+                                startI: i,
+                                startJ: j,
+                                endI: i,
+                                endJ: k + 1,
+                                left: sp.offsetLeft + 70,
+                                value: span_array[i][j]
+                            }
+
+                            move_flag = true;
+                            continue;
+                        } else if (span_array[i][k] != span_array[i][j] && jugle(k, j, i)) {
+                            if (k + 1 == j)
+                                break;
+                            let sp = document.getElementById(i + "_" + k);
+                            loc[loc.length] = {
+                                startI: i,
+                                startJ: j,
+                                endI: i,
+                                endJ: k + 1,
+                                left: sp.offsetLeft + 70,
+                                value: span_array[i][j]
+
+                            }
+                            span_array[i][k + 1] += span_array[i][j];
+                            span_array[i][j] = 0;
+                            move_flag = true;
+                            break;
+                        } else if (span_array[i][k] == span_array[i][j] && !jugle(k, j, i)) {
+                            k++;
+                            continue;
+                        }
+
+                    }
+
+                }
+
+
+
+            }
+            create(loc);
+            showMoveAnimation1(loc);
+            deleteElements(loc);
+            var timeout = setTimeout(function() {
+                if (move_flag)
+                    random_create(1);
+                clearTimeout(timeout);
+            }, 50)
+        }
+
+        function up() {
+            var loc = new Array();
+            let move_flag = false;
+            for (let i = 0; i < 4; i++) {
+                let flag = false;
+                for (let j = 0; j < 4; j++) {
+                    if (!span_array[j][i] || j == 0) continue;
+                    for (let k = 0; k < j; k++) {
+                        if (flag && span_array[k][i] == span_array[j][i] && jugle2(k, j, i)) {
+                            flag = false;
+                            continue;
+                        }
+                        if (!span_array[k][i] && jugle2(k, j, i) || span_array[k][i] == span_array[j][i] && jugle2(k, j, i)) {
+                            let sp = document.getElementById(k + "_" + i);
+                            loc[loc.length] = {
+                                startI: j,
+                                startJ: i,
+                                endI: k,
+                                endJ: i,
+                                top: sp.offsetTop,
+                                value: span_array[j][i]
+                            }
+                            if (span_array[k][i] == span_array[j][i] && jugle2(k, j, i)) {
+                                flag = true;
+                                score += span_array[k][i] * 2;
+                            }
+                            span_array[k][i] += span_array[j][i];
+                            span_array[j][i] = 0;
+                            move_flag = true;
+                            break;
+
+                        } else if (!span_array[k][i] && !jugle2(k, j, i)) {
+
+                            let sp = document.getElementById(k + "_" + i);
+                            loc[loc.length] = {
+                                startI: j,
+                                startJ: i,
+                                endI: k + 1,
+                                endJ: i,
+                                top: sp.offsetTop + 70,
+                                value: span_array[j][i]
+                            }
+
+                            move_flag = true;
+                            continue;
+                        } else if (span_array[k][i] != span_array[j][i] && jugle2(k, j, i)) {
+                            if (k + 1 == j)
+                                break;
+                            let sp = document.getElementById(k + "_" + i);
+                            loc[loc.length] = {
+                                startI: j,
+                                startJ: i,
+                                endI: k + 1,
+                                endJ: i,
+                                top: sp.offsetTop + 70,
+                                value: span_array[j][i]
+
+                            }
+                            span_array[k + 1][i] += span_array[j][i];
+                            span_array[j][i] = 0;
+                            move_flag = true;
+                            break;
+                        } else if (span_array[k][i] == span_array[j][i] && !jugle2(k, j, i)) {
+                            k++;
+                            continue;
+                        }
+                    }
+
+                }
+
+            }
+            create(loc);
+            showMoveAnimation2(loc);
+            deleteElements(loc);
+            var timeout = setTimeout(function() {
+                if (move_flag)
+                    random_create(1);
+                clearTimeout(timeout);
+            }, 50)
+        }
+
+        function right() {
+            var loc = new Array();
+            let move_flag = false;
+            for (let i = 3; i >= 0; i--) {
+                let flag = false;
+                for (let j = 3; j >= 0; j--) {
+                    if (!span_array[i][j] || j == 3) continue;
+                    for (let k = 3; k > j; k--) {
+                        if (flag && span_array[i][k] == span_array[i][j] && jugle_right(j, k, i)) {
+                            flag = false;
+                            continue;
+                        }
+                        if (!span_array[i][k] && jugle_right(j, k, i) || span_array[i][k] == span_array[i][j] && jugle_right(j, k, i)) {
+
+                            let sp = document.getElementById(i + "_" + k);
+                            loc[loc.length] = {
+                                startI: i,
+                                startJ: j,
+                                endI: i,
+                                endJ: k,
+                                right: sp.offsetLeft,
+                                value: span_array[i][j]
+                            }
+                            if (span_array[i][k] == span_array[i][j] && jugle_right(j, k, i)) {
+                                flag = true;
+                                score += span_array[i][k] * 2;
+                            }
+                            span_array[i][k] += span_array[i][j];
+                            span_array[i][j] = 0;
+                            move_flag = true;
+                            break;
+
+                        } else if (!span_array[i][k] && !jugle_right(j, k, i)) {
+
+                            let sp = document.getElementById(i + "_" + k);
+                            loc[loc.length] = {
+                                startI: i,
+                                startJ: j,
+                                endI: i,
+                                endJ: k - 1,
+                                right: sp.offsetLeft - 70,
+                                value: span_array[i][j]
+                            }
+                            move_flag = true;
+                            continue;
+                        } else if (span_array[i][k] != span_array[i][j] && jugle_right(j, k, i)) {
+                            if (k - 1 == j)
+                                continue;
+                            let sp = document.getElementById(i + "_" + k);
+                            loc[loc.length] = {
+                                startI: i,
+                                startJ: j,
+                                endI: i,
+                                endJ: k - 1,
+                                right: sp.offsetLeft - 70,
+                                value: span_array[i][j]
+                            }
+                            span_array[i][k - 1] += span_array[i][j];
+                            span_array[i][j] = 0;
+                            move_flag = true;
+                            break;
+                        } else if (span_array[i][k] == span_array[i][j] && !jugle_right(j, k, i)) {
+
+                            continue;
+                        }
+                    }
+
+                }
+            }
+            create(loc);
+            showMoveAnimation_right(loc);
+            deleteElements(loc);
+            var timeout = setTimeout(function() {
+                if (move_flag)
+                    random_create(1);
+                clearTimeout(timeout);
+            }, 50)
+
+        }
+
+        function down() {
+            var loc = new Array();
+            let move_flag = false;
+            for (let i = 3; i >= 0; i--) {
+                let flag = false;
+                for (let j = 3; j >= 0; j--) {
+                    if (!span_array[j][i] || j == 3) continue;
+                    for (let k = 3; k > j; k--) {
+                        if (flag && span_array[k][i] == span_array[j][i] && jugle_down(j, k, i)) {
+                            flag = false;
+                            continue;
+                        }
+                        if (!span_array[k][i] && jugle_down(j, k, i) || span_array[k][i] == span_array[j][i] && jugle_down(j, k, i)) {
+                            let sp = document.getElementById(k + "_" + i);
+                            loc[loc.length] = {
+                                startI: j,
+                                startJ: i,
+                                endI: k,
+                                endJ: i,
+                                top: sp.offsetTop,
+                                value: span_array[j][i]
+                            }
+                            if (span_array[k][i] == span_array[j][i] && jugle_down(j, k, i)) {
+                                flag = true;
+                                score += span_array[k][i] * 2;
+                            }
+                            span_array[k][i] += span_array[j][i];
+                            span_array[j][i] = 0;
+                            move_flag = true;
+                            break;
+
+                        } else if (!span_array[k][i] && !jugle_down(j, k, i)) {
+
+                            let sp = document.getElementById(k + "_" + i);
+                            loc[loc.length] = {
+                                startI: j,
+                                startJ: i,
+                                endI: k - 1,
+                                endJ: i,
+                                top: sp.offsetTop - 70,
+                                value: span_array[j][i]
+                            }
+
+                            move_flag = true;
+                            continue;
+                        } else if (span_array[k][i] != span_array[j][i] && jugle_down(j, k, i)) {
+                            if (k - 1 == j)
+                                break;
+                            let sp = document.getElementById(k + "_" + i);
+                            loc[loc.length] = {
+                                startI: j,
+                                startJ: i,
+                                endI: k - 1,
+                                endJ: i,
+                                top: sp.offsetTop - 70,
+                                value: span_array[j][i]
+
+                            }
+                            span_array[k - 1][i] += span_array[j][i];
+                            span_array[j][i] = 0;
+                            move_flag = true;
+                            break;
+                        } else if (span_array[k][i] == span_array[j][i] && !jugle_down(j, k, i)) {
+
+                            continue;
+                        }
+                    }
+
+                }
+            }
+            create(loc);
+            showMoveAnimation2(loc);
+            deleteElements(loc);
+            var timeout = setTimeout(function() {
+                if (move_flag)
+                    random_create(1);
+                clearTimeout(timeout);
+            }, 50)
+        }
+    </script>
+</body>
+
+</html>
