@@ -157,6 +157,7 @@
     table thead tr {
         background-color: #008c8c;
         color: #fff;
+        cursor: pointer;
     }
     
     table tbody tr:nth-child(odd) {
@@ -428,10 +429,11 @@
             return ary;
         }
 
+
         function merge(left, right) {
             let result = [];
             while (left.length && right.length) {
-                if (left[0] < right[0]) {
+                if (left[0] > right[0]) {
                     result.push(left.shift());
                 } else {
                     result.push(right.shift());
@@ -547,6 +549,22 @@
                 }
             }
         }
+        let thead = document.getElementsByTagName("thead")[0];
+        fl = true;
+
+        thead.addEventListener("click", function() {
+            let td = document.getElementsByClassName("td");
+            if (fl) {
+                score_history = QuickSort(score_history, 0, localStorage.length - 3);
+                fl = false;
+            } else {
+                score_history = score_history.reverse();
+                fl = true;
+            }
+            for (let i = 0; i < score_history.length && i < 5; i++)
+                td[i].innerText = score_history[i];
+        });
+
 
         function init() {
 
@@ -560,13 +578,16 @@
                 [0, 0, 0, 0]
             ];
             let td = document.getElementsByClassName("td");
-            for (let i = 0; i < localStorage.length; i++)
-                score_history.push(localStorage.getItem("" + i));
-            // score_history.sort(function (num1, num2) {
-            //     return num2 - num1;
-            // })
-            score_history = QuickSort(score_history, 0, localStorage.length - 1);
-            console.log(score_history);
+
+
+            for (let i = 0; i < localStorage.length; i++) {
+                let n = Number(localStorage.getItem("" + i));
+                if (n)
+                    score_history.push(n);
+            }
+            score_history = MergeSort(score_history);
+
+
             for (let i = 0; i < score_history.length && i < 5; i++)
                 td[i].innerText = score_history[i];
             var valueLocal = localStorage.getItem("store");
