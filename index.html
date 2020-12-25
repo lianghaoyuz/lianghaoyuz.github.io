@@ -137,7 +137,7 @@
         width: 200px;
         height: 300px;
         font-weight: bolder;
-        font-size: 30px;
+        font-size: larger;
     }
     
     table {
@@ -401,6 +401,55 @@
             }
         }
 
+        function QuickSort(ary, left, right) {
+            if (left >= right) {
+                return ary;
+            }
+            var i = left,
+                j = right;
+            base = ary[left];
+            while (i < j) {
+                while (i < j && ary[j] >= base) {
+                    j--;
+                }
+                while (i < j && ary[i] <= base) {
+                    i++
+                }
+                if (i < j) {
+                    var temp = ary[i];
+                    ary[i] = ary[j];
+                    ary[j] = temp;
+                }
+            }
+            ary[left] = ary[i];
+            ary[i] = base;
+            QuickSort(ary, left, i - 1);
+            QuickSort(ary, i + 1, right);
+            return ary;
+        }
+
+        function merge(left, right) {
+            let result = [];
+            while (left.length && right.length) {
+                if (left[0] < right[0]) {
+                    result.push(left.shift());
+                } else {
+                    result.push(right.shift());
+                }
+            }
+            return result.concat(left).concat(right);
+
+        }
+
+        function MergeSort(arr) {
+            if (arr.length == 1) {
+                return arr;
+            }
+            let mid = Math.floor(arr.length / 2);
+            let left = arr.slice(0, mid);
+            let right = arr.slice(mid);
+            return merge(MergeSort(left), MergeSort(right));
+        }
 
         function UpNonMove() {
             for (var j = 0; j < 4; j++) {
@@ -500,6 +549,7 @@
         }
 
         function init() {
+
             document.addEventListener("keydown", keyd);
             back.addEventListener("click", back_function);
             score_history = [];
@@ -512,9 +562,10 @@
             let td = document.getElementsByClassName("td");
             for (let i = 0; i < localStorage.length; i++)
                 score_history.push(localStorage.getItem("" + i));
-            score_history.sort(function(num1, num2) {
-                return num2 - num1;
-            })
+            // score_history.sort(function (num1, num2) {
+            //     return num2 - num1;
+            // })
+            score_history = QuickSort(score_history, 0, localStorage.length - 1);
             console.log(score_history);
             for (let i = 0; i < score_history.length && i < 5; i++)
                 td[i].innerText = score_history[i];
